@@ -9,4 +9,4 @@ The Project allows trading NFTs in English auctions. To call function `placeBid`
 
 ## erc721 contract goerli
 ### 0x0EeB17d57b22d7099f593E67ee2A9FfA9bc11d3D
-[contract at goerli.etherscan.io] (https://goerli.etherscan.io/address/0x0EeB17d57b22d7099f593E67ee2A9FfA9bc11d3D
+[contract at goerli.etherscan.io] (https://goerli.etherscan.io/address/0x0EeB17d57b22d7099f593E67ee2A9FfA9bc11d3D)
