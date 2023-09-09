@@ -18,7 +18,7 @@ interface IMyNFT {
 }
 
 contract NFTAuction is IERC721Receiver {
-    IMyNFT public MyNFT;
+    IMyNFT public myNFT;
     Itoken public token;
     address public contractOwner;
 
@@ -36,6 +36,7 @@ contract NFTAuction is IERC721Receiver {
     constructor(address _token_address) {
         contractOwner = msg.sender;
         token = Itoken(_token_address);
+        myNFT = IMyNFT(_token_address);
     }
 
     event ERC721Received(address operator, address from, uint tokenId, bytes data);
@@ -74,14 +75,13 @@ contract NFTAuction is IERC721Receiver {
     During the auction there should be no way for NFT to leave the contract - it should be locked on contract. 
     One NFT can participate in only one auction.
     */
-    function listNFTOnAuction(uint256 _tokenId, uint256 _minBid, uint256 numberOfDays, address _MyNFT_address) checkBalance(_minBid) public {
-        MyNFT = IMyNFT(_MyNFT_address);
-        address nftOwner = MyNFT.ownerOf(_tokenId);
+    function listNFTOnAuction(uint256 _tokenId, uint256 _minBid, uint256 numberOfDays) checkBalance(_minBid) public {
+        address nftOwner = myNFT.ownerOf(_tokenId);
         require(nftOwner == msg.sender, "only owner");
 
         NFTs[_tokenId] = NFTAsset(_tokenId, _minBid, 0, address(0), block.timestamp, block.timestamp + (numberOfDays * 1 days), msg.sender);
         token.transferFrom(msg.sender, address(this), _minBid);
-        MyNFT.safeTransferFrom(nftOwner, address(this), _tokenId);
+        myNFT.safeTransferFrom(nftOwner, address(this), _tokenId);
     }
 
 
@@ -115,7 +115,7 @@ contract NFTAuction is IERC721Receiver {
          require(NFTs[_tokenId].endAt < block.timestamp, "auction not ended");
          if(NFTs[_tokenId].highestBid > 0) {
             emit FinishAuction(NFTs[_tokenId].highestBidder, _tokenId, NFTs[_tokenId].highestBid);
-            MyNFT.safeTransferFrom(address(this), NFTs[_tokenId].highestBidder, _tokenId);
+            myNFT.safeTransferFrom(address(this), NFTs[_tokenId].highestBidder, _tokenId);
             delete NFTs[_tokenId];
          } else {
             //no bids, nft back to the owner
@@ -128,7 +128,7 @@ contract NFTAuction is IERC721Receiver {
     function _withdrawNft(uint256 _tokenId) internal {
         //money and NFT is going back to the NFT creator
         token.transfer(NFTs[_tokenId].owner, NFTs[_tokenId].minBid);
-        MyNFT.safeTransferFrom(address(this), NFTs[_tokenId].owner, _tokenId);
+        myNFT.safeTransferFrom(address(this), NFTs[_tokenId].owner, _tokenId);
         delete NFTs[_tokenId];
     }
 }

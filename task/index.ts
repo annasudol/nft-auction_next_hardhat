@@ -7,8 +7,8 @@ const ERC20_CONTRACT = process.env.ERC20 || '';
 const ERC721: string = process.env.ERC721 || '';
 const NFT_AUCTION_CONTRACT_ADDRESS = process.env.NFT_AUCTION_CONTRACT_ADDRESS || '';
 task("mint", "Mint new NFT")
-    .addParam("to", "owner address")
-    .addParam("id", "token id")
+    .addParam("to", "ownerAddress")
+    .addParam("id", "tokenId")
     .setAction(async (taskArgs: { to: any; id: any }, hre) => {
         const myErc70 = await hre.ethers.getContractAt("MyNFT", ERC721);
         const [account] = await hre.ethers.getSigners();
@@ -17,15 +17,14 @@ task("mint", "Mint new NFT")
     });
 
 task("listNFTOnAuction", "listNFT")
-    .addParam("minPrice", "minPrice")
-    .addParam("tokenId", "tokenId")
-    .addParam("numberOfDays", "numberOfDays")
-    .addParam("myNFT", "myNFT")
-    .setAction(async (taskArgs: { minPrice: any; tokenId: any, numberOfDays: any, myNFT: any }, hre) => {
+    .addParam("min", "minPrice")
+    .addParam("id", "tokenId")
+    .addParam("days", "numberOfDays")
+    .setAction(async (taskArgs: { minPrice: any; tokenId: any, numberOfDays: any, }, hre) => {
         const NFTAuction = await hre.ethers.getContractAt("NFTAuction", NFT_AUCTION_CONTRACT_ADDRESS);
-        const erc20 = await hre.ethers.getContractAt("MyErc20", ERC20_CONTRACT);
+        const erc20 = await hre.ethers.getContractAt("Token", ERC20_CONTRACT);
         erc20.increaseAllowance(NFT_AUCTION_CONTRACT_ADDRESS, taskArgs.minPrice)
         const [account] = await hre.ethers.getSigners();
-        let tx_1 = await NFTAuction.listNFTOnAuction(taskArgs.tokenId, taskArgs.minPrice, taskArgs.numberOfDays, taskArgs.myNFT);
+        let tx_1 = await NFTAuction.listNFTOnAuction(taskArgs.tokenId, taskArgs.minPrice, taskArgs.numberOfDays);
         console.log(`listed NFT ${taskArgs.tokenId} ETH, tx: ${tx_1.hash}, by ${account.address}`);
     });

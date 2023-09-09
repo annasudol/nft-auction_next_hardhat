@@ -38,7 +38,7 @@ describe("NFTAuction", function () {
             expect(nftOwner).to.equal(acc0.address)
             await erc721.approve(auction.address, nftId_1)
             await erc20.increaseAllowance(auction.address, min_bid);
-            const tx = await auction.listNFTOnAuction(nftId_1, min_bid, 1, erc721.address);
+            const tx = await auction.listNFTOnAuction(nftId_1, min_bid, 1);
             await expect(tx).to.emit(auction, "ERC721Received").withArgs(auction.address, acc0.address, nftId_1, '0x');
             nftOwner = await erc721.ownerOf(nftId_1);
             expect(nftOwner).to.equal(auction.address)
