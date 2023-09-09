@@ -3,7 +3,7 @@ require("@nomiclabs/hardhat-ethers");
 import * as dotenv from "dotenv";
 dotenv.config();
 import { HardhatUserConfig } from "hardhat/config";
-// import "./task"
+import "./task"
 const ALCHEMY_PROJECT_ID = process.env.ALCHEMY_PROJECT_ID || '';
 const MNEMONIC = process.env.MNEMONIC || '';;
 
